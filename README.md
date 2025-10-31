@@ -19,11 +19,11 @@ Light theme
 Dark theme
 
 ![Dark theme screenshot](docs/images/img-dark.png)
-````
+ 
  
 ## Installation
  
-````markdown
+ 
 # Helm Highligth Unused Values
  
 VS Code extension that highlights unused values in Helm `values.yaml` files.
