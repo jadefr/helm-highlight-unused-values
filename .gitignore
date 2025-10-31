@@ -29,4 +29,4 @@ yarn-error.log*
 Thumbs.db
 
 # Testing Chart
-src/test-chart
+test-chart/
