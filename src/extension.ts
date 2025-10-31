@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
             decorationType.dispose();
             decorationType = vscode.window.createTextEditorDecorationType(getDecorationOptions());
             // Refresh all active editors
-            vscode.window.visibleTextEditors.forEach(editor => {
+            vscode.window.visibleTextEditors.forEach((editor: vscode.TextEditor) => {
                 if (editor.document.languageId === 'yaml' && isValuesFile(editor.document.fileName)) {
                     updateDecorations(editor);
                 }
@@ -38,13 +38,13 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
     
-    const disposable = vscode.workspace.onDidChangeTextDocument(event => {
+    const disposable = vscode.workspace.onDidChangeTextDocument((event: vscode.TextDocumentChangeEvent) => {
         if (event.document.languageId === 'yaml' && isValuesFile(event.document.fileName)) {
             updateDecorations(vscode.window.activeTextEditor);
         }
     });
  
-    vscode.window.onDidChangeActiveTextEditor(editor => {
+    vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor | undefined) => {
         if (editor && editor.document.languageId === 'yaml' && isValuesFile(editor.document.fileName)) {
             updateDecorations(editor);
         }
@@ -86,8 +86,8 @@ function findTemplateFiles(valuesPath: string): string[] {
     if (!fs.existsSync(templatesDir)) return [];
    
     return fs.readdirSync(templatesDir)
-        .filter(file => file.endsWith('.yaml') || file.endsWith('.yml'))
-        .map(file => path.join(templatesDir, file));
+        .filter((file: string) => file.endsWith('.yaml') || file.endsWith('.yml'))
+        .map((file: string) => path.join(templatesDir, file));
 }
  
 function findUsedValues(templateFiles: string[]): Set<string> {
@@ -109,8 +109,8 @@ function findUsedValues(templateFiles: string[]): Set<string> {
     return used;
 }
  
-function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedValues: Set<string>): vscode.Range[] {
-    const ranges: vscode.Range[] = [];
+function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedValues: Set<string>): vscode.DecorationOptions[] {
+    const decorations: vscode.DecorationOptions[] = [];
     const lines = document.getText().split('\n');
    
     function checkObject(obj: any, prefix: string = '', startLine: number = 0) {
@@ -122,7 +122,15 @@ function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedVa
            
             if (keyLine !== -1 && !isValueUsed(fullKey, usedValues)) {
                 const range = new vscode.Range(keyLine, 0, keyLine, lines[keyLine].length);
-                ranges.push(range);
+                // Create hover message with the full path of the unused value
+                const hoverMessage = new vscode.MarkdownString();
+                hoverMessage.appendMarkdown(`⚠️ Unused Value: \`${fullKey}\`\n\n`);
+                hoverMessage.appendMarkdown('This value is not referenced in any template files.');
+                
+                decorations.push({
+                    range,
+                    hoverMessage
+                });
             }
            
             if (typeof value === 'object' && value !== null) {
@@ -132,7 +140,7 @@ function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedVa
     }
    
     checkObject(valuesData);
-    return ranges;
+    return decorations;
 }
  
 function findKeyLine(lines: string[], key: string, startLine: number): number {

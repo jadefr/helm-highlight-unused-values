@@ -9,6 +9,32 @@ VS Code extension that highlights unused values in Helm `values.yaml` files.
 - Highlights unused values with underline
 - Real-time updates as you edit
  
+ 
+## Screenshots
+ 
+Light theme
+ 
+![Light theme screenshot](test-chart/images/img-light.png)
+ 
+Dark theme
+ 
+![Dark theme screenshot](test-chart/images/img-dark.png)
+````
+ 
+## Installation
+ 
+````markdown
+# Helm Highligth Unused Values
+ 
+VS Code extension that highlights unused values in Helm `values.yaml` files.
+ 
+## Features
+ 
+- Automatically detects `values.yaml` files
+- Scans corresponding `templates/` directory for value usage
+- Highlights unused values with underline
+- Real-time updates as you edit
+ 
 ## Installation
  
 1. Compile the extension:
@@ -32,7 +58,6 @@ Open any `values.yaml` file in a Helm chart. Unused values will be highlighted a
    ```bash
    code --uninstall-extension helm-highlight-unused-values
    ```
-
  
 ## Development Testing
  
