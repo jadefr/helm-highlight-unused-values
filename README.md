@@ -13,12 +13,12 @@ VS Code extension that highlights unused values in Helm `values.yaml` files.
 ## Screenshots
  
 Light theme
- 
-![Light theme screenshot](test-chart/images/img-light.png)
- 
+
+![Light theme screenshot](docs/images/img-light.png)
+
 Dark theme
- 
-![Dark theme screenshot](test-chart/images/img-dark.png)
+
+![Dark theme screenshot](docs/images/img-dark.png)
 ````
  
 ## Installation

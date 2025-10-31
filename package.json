@@ -3,6 +3,10 @@
   "displayName": "Helm Highlight Unused Values",
   "description": "Highlights unused values in Helm values.yaml files",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jadefr/helm-highlight-unused-values.git"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },
