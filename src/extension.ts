@@ -120,10 +120,15 @@ function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedVa
        
         for (const [key, value] of Object.entries(obj)) {
             const fullKey = prefix ? `${prefix}.${key}` : key;
-            const keyLine = findKeyLine(lines, key, startLine);
+            const keyPos = findKeyLine(lines, key, startLine);
            
-            if (keyLine !== -1 && !isValueUsed(fullKey, usedValues)) {
-                const range = new vscode.Range(keyLine, 0, keyLine, lines[keyLine].length);
+            if (keyPos && !isValueUsed(fullKey, usedValues)) {
+                const range = new vscode.Range(
+                    keyPos.line,
+                    keyPos.column,
+                    keyPos.line,
+                    keyPos.column + keyPos.length
+                );
                 // Create hover message with the full path of the unused value
                 const hoverMessage = new vscode.MarkdownString();
                 hoverMessage.appendMarkdown(`⚠️ Unused Value: \`${fullKey}\`\n\n`);
@@ -136,7 +141,7 @@ function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedVa
             }
            
             if (typeof value === 'object' && value !== null) {
-                checkObject(value, fullKey, keyLine + 1);
+                checkObject(value, fullKey, keyPos ? keyPos.line + 1 : startLine);
             }
         }
     }
@@ -145,13 +150,27 @@ function findUnusedValues(document: vscode.TextDocument, valuesData: any, usedVa
     return decorations;
 }
  
-function findKeyLine(lines: string[], key: string, startLine: number): number {
+interface KeyPosition {
+    line: number;
+    column: number;
+    length: number;
+}
+
+function findKeyLine(lines: string[], key: string, startLine: number): KeyPosition | null {
     for (let i = startLine; i < lines.length; i++) {
-        if (lines[i].trim().startsWith(`${key}:`)) {
-            return i;
+        const line = lines[i];
+        const trimmedLine = line.trim();
+        if (trimmedLine.startsWith(`${key}:`)) {
+            // Find the actual column where the key starts in the original line
+            const column = line.indexOf(key);
+            return { 
+                line: i, 
+                column: column,
+                length: key.length
+            };
         }
     }
-    return -1;
+    return null;
 }
  
 function isValueUsed(key: string, usedValues: Set<string>): boolean {
