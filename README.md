@@ -1,4 +1,4 @@
-# Helm Highligth Unused Values
+# Helm Highligth Unused Values - Syntax Highlighting for Helm
  
 VS Code extension that highlights unused values in Helm `values.yaml` files.
  
@@ -6,7 +6,7 @@ VS Code extension that highlights unused values in Helm `values.yaml` files.
  
 - Automatically detects `values.yaml` files
 - Scans corresponding `templates/` directory for value usage
-- Highlights unused values with underline
+- Highlights unused values with a curly underline
 - Real-time updates as you edit
  
  
