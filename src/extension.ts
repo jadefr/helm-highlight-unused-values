@@ -92,7 +92,9 @@ function findTemplateFiles(valuesPath: string): string[] {
  
 function findUsedValues(templateFiles: string[]): Set<string> {
     const used = new Set<string>();
-    const valuePattern = /\{\{\s*[-.]?\s*\.Values\.([a-zA-Z0-9._-]+)/g;
+    // Match .Values.<path> anywhere inside a moustache expression, including when wrapped
+    // by functions (e.g. {{- toYaml .Values.resources | nindent 12 }}).
+    const valuePattern = /\{\{[\s\S]*?\.Values\.([a-zA-Z0-9._-]+)/g;
    
     templateFiles.forEach(file => {
         try {
